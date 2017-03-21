@@ -31,4 +31,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class);
     }
+
+    public function follows() {
+        return $this->hasMany(Follow::class);
+    }
+
+    public function followed_by($user, $user_id)
+    {
+        return $user->follows()->where('target_id', $user_id)->first();
+    }
 }

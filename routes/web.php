@@ -20,8 +20,12 @@ Route::get('/home', 'HomeController@index');
 Auth::routes();
 
 Route::group(['middleware' => 'auth'], function () {
-
     Route::resource('posts', 'PostsController');
+    Route::get('/users', 'FollowController@index');
+    Route::post('/follow', 'FollowController@follow');
+    Route::delete('/follow/{follow}', 'FollowController@unfollow');
+    Route::get('/feed', 'FeedsController@newsFeed');
+    Route::get('/notifications', 'FeedsController@notification');
 });
 
 
