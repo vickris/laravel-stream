@@ -22,8 +22,8 @@ Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('posts', 'PostsController');
     Route::get('/users', 'FollowController@index');
-    Route::post('/follow', 'FollowController@follow');
-    Route::delete('/follow/{follow}', 'FollowController@unfollow');
+    Route::post('/follow/{user}', 'FollowController@follow');
+    Route::delete('/unfollow/{user}', 'FollowController@unfollow');
     Route::get('/feed', 'FeedsController@newsFeed');
     Route::get('/notifications', 'FeedsController@notification');
 });

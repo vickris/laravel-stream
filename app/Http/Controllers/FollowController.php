@@ -5,33 +5,41 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Follow;
+use Illuminate\Support\Facades\Auth;
 
 class FollowController extends Controller
 {
     public function index()
     {
         return view('users.index', [
-            'users' => User::get()
+            'users' => $users = User::all()->except(Auth::id())
         ]);
     }
 
-    public function follow(Request $request)
+    public function follow(User $user)
     {
-        // Create a new follow instance for the authenticated user
-        // This target_id will come from a hidden field input after clicking the
-        // follow button in the users index view
-        $request->user()->follows()->create([
-            'target_id' => $request->target_id,
-        ]);
-        \FeedManager::followUser($request->user()->id, $request->target_id);
+        if (!$user->followed_by(Auth::User(), $user->id)) {
+            // Create a new follow instance for the authenticated user
+            Auth::user()->follows()->create([
+                'target_id' => $user->id,
+            ]);
+
+            \FeedManager::followUser(Auth::id(), $user->id);
+        }
+
         return redirect()->back();
     }
 
-    public function unfollow($user_id, Request $request)
+    public function unfollow(User $user)
     {
-        $follow = $request->user()->follows()->where('target_id', $user_id)->first();
-        \FeedManager::unfollowUser($request->user()->id, $follow->target_id);
-        $follow->delete();
+        if ($user->followed_by(Auth::User(), $user->id)) {
+            $follow = Auth::user()->follows()->where('target_id', $user->id)->first();
+
+            if ($follow) {
+                \FeedManager::unfollowUser(Auth::id(), $follow->target_id);
+                $follow->delete();
+            }
+        }
 
         return redirect()->back();
     }
