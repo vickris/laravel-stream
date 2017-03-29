@@ -12,7 +12,7 @@ class FollowController extends Controller
     public function index()
     {
         return view('users.index', [
-            'users' => User::all()->except(Auth::id())
+            'users' => User::where('id', '!=', Auth::id())->get()
         ]);
     }
 
@@ -23,24 +23,25 @@ class FollowController extends Controller
             Auth::user()->follows()->create([
                 'target_id' => $user->id,
             ]);
-
             \FeedManager::followUser(Auth::id(), $user->id);
+
+            return back()->with('success', 'You are now friends with '. $user->name);
+        } else {
+            return back()->with('error', 'You are already following this person');
         }
 
-        return redirect()->back();
     }
 
     public function unfollow(User $user)
     {
         if (Auth::user()->isFollowing($user->id)) {
             $follow = Auth::user()->follows()->where('target_id', $user->id)->first();
+            \FeedManager::unfollowUser(Auth::id(), $follow->target_id);
+            $follow->delete();
 
-            if ($follow) {
-                \FeedManager::unfollowUser(Auth::id(), $follow->target_id);
-                $follow->delete();
-            }
+            return back()->with('success', 'You are no longer friends with '. $user->name);
+        } else {
+            return back()->with('error', 'You are not following this person');
         }
-
-        return redirect()->back();
     }
 }
