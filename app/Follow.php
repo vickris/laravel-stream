@@ -22,7 +22,7 @@ class Follow extends Model
 
     public function activityNotify()
     {
-        $targetFeed = \FeedManager::getNotificationFeed($this->target->id);
+        $targetFeed = \FeedManager::getNotificationFeed($this->target_id);
         return array($targetFeed);
     }
 

@@ -46,7 +46,7 @@
                         &nbsp;
                         <li><a href="{{ url('/posts/create') }}">New Post</a></li>
                         <li><a href="{{ url('/users') }}">Users</a></li>
-                        <li><a href="{{ url('/feed') }}">Newsfeed</a></li>
+                        <li><a href="{{ url('/feed') }}">News Feed</a></li>
                         <li><a href="{{ url('/notifications') }}">Notification Feed</a></li>
                     </ul>
 

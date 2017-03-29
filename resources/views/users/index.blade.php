@@ -20,7 +20,7 @@
                             @foreach ($users as $user)
                                 <tr>
                                     <td clphpass="table-text"><div>{{ $user->name }}</div></td>
-                                    @if ($user->followed_by(Auth::User(), $user->id))
+                                    @if (Auth::User()->isFollowing($user->id))
                                         <td>
                                             <form action="{{url('unfollow/' . $user->id)}}" method="POST">
                                                 {{ csrf_field() }}

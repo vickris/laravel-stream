@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -36,8 +37,8 @@ class User extends Authenticatable
         return $this->hasMany(Follow::class);
     }
 
-    public function followed_by($user, $user_id)
+    public function isFollowing($target_id)
     {
-        return $user->follows()->where('target_id', $user_id)->first();
+        return Auth::user()->follows()->where('target_id', $target_id)->first();
     }
 }

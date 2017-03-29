@@ -12,13 +12,13 @@ class FollowController extends Controller
     public function index()
     {
         return view('users.index', [
-            'users' => $users = User::all()->except(Auth::id())
+            'users' => User::all()->except(Auth::id())
         ]);
     }
 
     public function follow(User $user)
     {
-        if (!$user->followed_by(Auth::User(), $user->id)) {
+        if (!Auth::user()->isFollowing($user->id)) {
             // Create a new follow instance for the authenticated user
             Auth::user()->follows()->create([
                 'target_id' => $user->id,
@@ -32,7 +32,7 @@ class FollowController extends Controller
 
     public function unfollow(User $user)
     {
-        if ($user->followed_by(Auth::User(), $user->id)) {
+        if (Auth::user()->isFollowing($user->id)) {
             $follow = Auth::user()->follows()->where('target_id', $user->id)->first();
 
             if ($follow) {
